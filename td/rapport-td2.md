@@ -1,0 +1,1 @@
+/* expliquer pourquoi on utilise telle commande pour les tryhackme pour réaliser quelque chose (reprendre td1 ducoup) */

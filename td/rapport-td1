@@ -1,0 +1,58 @@
+# Nmap
+
+Lorsqu’un ordinateur exécute un service réseau, il ouvre une structure réseau appelée « port » pour recevoir la connexion. Chaque ordinateur possède 65535 ports disponibles, dont certains qui sont des sports standarts (par exemple, le port 80 est associé au service HTTP).
+
+Lorsque nous voulons attaquer une cible, il est indispensable de savoir lesquels de ses ports sont ouverts. Pour cela, Nmap permet d'effectuer différents types d'analyses afin d'avoir plus d'informations sur les ports ouverts et fermés.
+
+Pour avoir plus d'information sur les arguments Nmap disponibles, on peut taper la commande `nmap -h` ou `man nmap`.
+
+Il existe 3 types d'analyses courantes :
+
+- les analyses de connexion TCP (argument `-sT`)
+- les analyses SYN (`-sS`)
+- les analyses UDP (`-sU`)
+
+ainsi que d'autres types d'analyses moins courantes telles que :
+
+- les analyses TCP nulles (`-sN`)
+- les analyses TCP FIN (`-sF`)
+- les scans de Noel TCP (`-sX`)
+
+## Analyse TCP
+
+Une analyse TCP Connect fonctionne en effectuant une négociation en trois étapes avec chaque port cible à tour de rôle. 
+
+Si Nmap envoie une requête TCP avec le drapeau SYN pour un port fermé, la cible répondra avec un drapeau TCP RST (Reset), ce qui permet à Nmap de conclure que le port est fermé.
+
+Si Nmap envoie la requête à un port ouvert, la cible répondra avec un drapeau TCP SYN/ACK, indiquant que le port est ouvert, et Nmap répondra alors avec un drapeau ACK.
+
+Enfin, si aucune réponse n'est reçue après l'envoi d'une requête, cela signifie que le port peut être protégé par un pare-feu et est donc considéré comme filtré.
+
+Cependant, on peut facilement configurer un pare-feu pour répondre avec un TCP RST et ainsi, simuler un port fermé.
+
+la commande suivnate permetterais de faire cela :
+
+`iptables -I INPUT -p tcp --dport <port> -j REJECT --reject-with tcp-reset`
+
+## Analyse SYN 
+
+Les analyses SYN sont utilisées pour analyser la plage de ports TCP d'une cible.
+
+Lors d'une analyse de connexion TCP complète, une négociation complète est établie avec la cible. Ici, lors d'une analyse SYN, un paquet RST est renvoyé au lieu d'un paquet ACK pour interrompre la connexion. Cela empêche le serveur d'essayer à plusieurs reprises d'effectuer la demande.
+
+Les aventages :
+
+- peut être utilisé pour contourner les anciens systèmes de détection d'intrusion.
+- ces analyses ne sont pas souvent enregistrées par les applications écoutant sur les ports ouverts.
+- l'analyse SYN est généralement plus rapide.
+
+Les inconvéniants :
+
+- nécéssite des droits d'administrateurs (`sudo`)
+- les services instables peuvent être parfois interrompu lors d'une analyse SYN.
+
+## Analyse UDP
+
+Les connexion UDP sont sans état. Cela signifie que les connexion UDP reposent sur l'envoie de paquet vers un port cible avec l'espoir qu'ils y parviennent. Ainsi, UDP est très bon pour les connexion qui nécessite de la vitesse, mais l'absence de retour rend UDP beaucoup plus compliqué à analyser.
+
+Lorsqu'un paquet est envoyé à un port UDP ouvert, il ne devrait pas y avoir de réponse. S'il y en a une, Nmap marque le port comme étant `open|filtered`. Il suspecte que le port soit ouvert, mais protégé par un pare-feu. S'il reçoit une réponse UDP, le port est marqué comme ouvert (inhabituel). S'il n y a pas de réponse, Nmap passe à autre chose. Lorsqu'un port est fermé, la cible répond avec un paquet ICMP contenant un message indiquant que le port est inaccessible ce qui permet d'itenfier clairement les ports fermés.
