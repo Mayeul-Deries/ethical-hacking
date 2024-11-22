@@ -17,12 +17,13 @@ on commence par chercher tous les ports ouverts
 
 ## Port 21
 
-On peut analyser plus en détail le port 21
+On peut analyser plus en détail le port 21. L'option "-sC" lance les scripts par défaut qui permettent de trouver des informations supplémentaires. L'option "-sV" permet de détecter les versions de chaque service utilisé. Enfin "-A" permet defaire un scan agresif pour détecter un maximum d'informations (OS et architectures...)
+
 `nmap -sC -sV -A -p 21 10.0.2.15`
 ![1731075008382](image/rapport/1731075008382.png)
 on voit ici qu'il y a un FLAG.txt
 
-on peut se connecter en mode ftp (avec l'identifiant et le mdp 'ftp')
+on peut se connecter en ftp (avec l'identifiant et le mdp 'ftp')
 `ftp 10.0.2.15`
 et en faisant "ls" on retrouve bien notre FLAG.txt
 ![1731595575888](image/rapport-tp1/1731595575888.png)
