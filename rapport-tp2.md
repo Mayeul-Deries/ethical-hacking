@@ -86,9 +86,9 @@ On peut analyser plus en détail le port 9001
 
 On remarque que ce site est créé avec Drupal, encore un CMS ("http-generator: Drupal 7")
 
-On peut essayer d'utiliser `msfconsole` pour accéder au shell metasploit qui permet de rechercher des vulnérabilités. 
+On peut essayer d'utiliser `msfconsole` pour accéder au shell metasploit qui permet de rechercher des vulnérabilités connues. 
 
-En faisant un `search drupal 7`, on constate qu'il y a des API property injection et des injection SQL :
+En faisant un `search drupal 7`, on constate qu'il existe des API property injection et des injection SQL connues :
 ![1731591971649](image/rapport-tp2/1731591971649.png)
 
 

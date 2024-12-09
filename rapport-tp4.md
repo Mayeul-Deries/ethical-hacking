@@ -11,10 +11,9 @@ on commence par faire une analyse détaillée de tous les ports ouverts.
 
 ![1732281030145](image/rapport-tp4/1732281030145.png)
 
-On voit que 2 ports sont ouverts : le 22 et le 80
+On voit que 2 ports sont ouverts : le 22 et le 80.
 
 ## Port 22
-
 
 On sait que le port 22 correspont à ssh, donc on va faire une attaque brut force en utilisant hydra
 `sudo hydra -l root -p /usr/share/wordlists/metasploit/unix-users.txt -t 6 ssh://10.0.2.7`
@@ -76,7 +75,7 @@ Cela nous redirige vers la page de gestion des utilisateurs
 
 ![1732285714579](image/rapport-tp4/1732285714579.png)
 
-Etant donné que PHP est utilisé gérer les requêtes, on peut essayer de générer un payload PHP pour attaquer la cible. 
+Etant donné que PHP est utilisé gérer les requêtes, on peut essayer de générer un payload PHP pour attaquer la cible. Un payload PHP est un morceau de code PHP que l'on va insérer dans le serveur cible afin d'obtenir un shell pour nous permettre de contrôler le système à distance.
 
 On va générer un script PHP contenant un reverse payload. Ce script va établir une connexion vers l'adresse IP 10.0.2.4 (l'ip de ma machine hote) sur le port (1234).
 
@@ -90,6 +89,11 @@ Maintenant on va modifier ce fichier "script.php" afin de faire correspondre l'i
 
 Je peux ouvrir une connexion netcat qui va écouter sur le port 1234 de la machine hote.
 
+`nc -lvp 1234`
+
+L'option -l permet d'écouter sur le port 1234 (listen), l'option -v ajoute de la verbosité et l'option -p permet de spécifier le port.
+
+
 Sur le site web, je clique sur ajouter une image. En essayant d'importer le "script.php", et j'ai alors eu un message d'erreur indiquant "NO PHP!!" qui s'affiche.
 
 ![1732289222546](image/rapport-tp4/1732289222546.png)
@@ -102,6 +106,6 @@ Enfin, en cliquant sur le script dans la liste, ce dernier s'execute et netcat i
 
 ![1732294208906](image/rapport-tp4/1732294208906.png)
 
-Je peux vérifier que je suis bien connecté à la machine cible avec la commande "ip addr". On retrouve bien lip `10.0.2.7`.
+Je peux vérifier que je suis bien connecté à la machine cible avec la commande "ip addr". On retrouve bien l'ip `10.0.2.7`.
 
 ![1732295085822](image/rapport-tp4/1732295085822.png)

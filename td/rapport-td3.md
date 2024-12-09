@@ -4,29 +4,26 @@ Ce TD nous présente l'outil SQLMap. SQLMap est un outil open-source utilisé po
 
 ## Mise en pratique
 
-Pour faire une première analyse, je vais utiliser gobuster, un outil qui permet de réaliser des atatques brutes force sur des répertoire et fichier d'un serveur.
+Pour faire une première analyse, je vais utiliser gobuster, un outil qui permet de réaliser des ataques brutes force sur des répertoire et fichier d'un serveur.
 
 La commande suivante permet de faire une analyse gobuster sur mon ip en utilisant le fichier de dictionnaire `wordlists/dirbuster/directory-list-2.3-medium.txt`. Il s'agit d'un fichier contenant une liste de mots à tester comme nom de répertoire ou de fichier. Je fais une analyse avec 50 threads qui permet de définir le nombre de requêtes simultanées effectuées (donc la vitesse d'execution de l'analyse).
  
-`gobuster dir -u http://10.10.17.38/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 50`
+`gobuster dir -u http://10.10.195.96/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 50`
 
-![1732265968960](image/rapport-td3/1732265968960.png)
-
+![1732727904990](image/rapport-td3/1732727904990.png)
 
 On constate que le mot "blood" ressort à la fin et on en déduit qu'il s'agit du répertoire que l'on doit analyser.
 
 
-On se rend à l'url "10.10.191.4/blood" et on tombe sur cette page web.
+On se rend à l'url "10.10.195.96/blood" et on tombe sur cette page web.
 
-![1732266112806](image/rapport-td3/1732266112806.png)
-
-<!-- Si on appuie sur "search", on constate dans la section network de l'inspecteur qu'il s'agit d'unen requete POST.  -->
+![1732727698198](image/rapport-td3/1732727698198.png)
 
 On peut donc faire une analyse burp, on va intercepter une requête en appuyant sur le bouton "search". 
 
-<!-- photo -->
+![1732728126685](image/rapport-td3/1732728126685.png)
 
-Puis on enregistre la sortie en fichier text "requ.txt" pour pouvoir la traiter.
+Puis on enregistre la sortie en fichier text "req.txt" pour pouvoir la traiter.
 
 On peut mainntenant faire une analyse SQLmap sur ce fichier.
 
