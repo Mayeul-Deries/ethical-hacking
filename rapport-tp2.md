@@ -12,27 +12,28 @@ On test la connection entre les 2 machines
 
 ![1731580691249](image/rapport-tp2/1731580691249.png)
 
-on commence par chercher tous les ports ouverts sur la machine cible
+Tout fonctionne correctement.
+
+Commençons par chercher tous les ports ouverts sur la machine cible
 `nmap -p- 10.0.2.15`
 
 ![1731580972906](image/rapport-tp2/1731580972906.png)
 
-On voit que 5 ports sont ouverts : le 22, le 80, le 5000, le 8081, le 9001
+On voit que 5 ports sont ouverts : le 22, le 80, le 5000, le 8081, le 9001. Analysons-les plus en détail.
 
 ## Port 22
 
-On peut analyser plus en détail le port 22
+On peut analyser plus en détail le port 22. L'option "-sC" lance les scripts par défaut qui permettent de trouver des informations supplémentaires. L'option "-sV" permet de détecter les versions de chaque service utilisé. Enfin "-A" permet de faire un scan agresif pour détecter un maximum d'informations (OS et architectures...)
 `nmap -sC -sV -A -p 22 10.0.2.15`
 
 ![1731584848917](image/rapport-tp2/1731584848917.png)
 
 On voit qu'il y a du ssh, donc on va faire une attaque brut force en utilisant hydra
-`sudo hydra -l root -p /usr/share/wordlists/metasploit/unix-users.txt -t 6 ssh://10.0.2.15`
+`sudo hydra -l root -p /usr/share/wordlists/metasploit/unix_passwords.txt -t 6 ssh://10.0.2.15`
 
 ![1731586985013](image/rapport-tp2/1731586985013.png)
 
-Je ne trouve rien de spécial.
-
+Sans succès...
 
 ## Port 80
 
@@ -41,13 +42,13 @@ On peut analyser plus en détail le port 80
 
 ![1731584826875](image/rapport-tp2/1731584826875.png)
 
-Le port 80 est associé au serveur web. On va donc essayer de se rendre à l'url 10.0.2.15 sur le navigateur
+Le port 80 est associé au serveur web. On va donc essayer de se rendre à l'url 10.0.2.15 sur le navigateur.
 
 ![1731587132416](image/rapport-tp2/1731587132416.png)
 
 On tombe sur une page web d'un blog, je ne remarque rien d'anormal ici.
 
-Je fais une analyse avec nikto
+Je fais une analyse avec nikto.
 
 ![1731588611774](image/rapport-tp2/1731588611774.png)
 

