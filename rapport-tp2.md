@@ -52,12 +52,12 @@ Je fais une analyse avec nikto.
 
 ![1731588611774](image/rapport-tp2/1731588611774.png)
 
-Ca ne donne rien de concluant
+Ca ne donne rien de concluant à part un fichier robots.txt
 
-J'essaye de faire une analyse avec dirb sur tous les fichiers, par exemple :
+J'essaye aussi de faire une analyse avec dirb sur tous les fichiers, par exemple :
 `dirb http://10.0.2.15 /usr/share/wordlists/dirb/common.txt`
 
-Cette analyse trouve un fichier robots.txt. En me rendant à l'url 10.0.2.15/robots.txt, on tombe sur une page m'indiquant 2 fichier "disallow" : home.html et about.html
+Cette analyse trouve un fichier robots.txt également. En me rendant à l'url 10.0.2.15/robots.txt, on tombe sur une page m'indiquant 2 fichier "disallow" : home.html et about.html
 
 ![1733864910477](image/rapport-tp2/1733864910477.png)
 
@@ -65,7 +65,7 @@ Je me rend dans une premier temps à l'url `10.0.2.15/home.html`.
 
 ![1733865013563](image/rapport-tp2/1733865013563.png)
 
-Ici je trouve un gros "lorem ipsum" et en bas de la page, comme signature peut-être, le mot "-fsociety.web" (je ne sais pas de quoi il s'agit).
+Ici je trouve un gros "lorem ipsum" et en bas de la page, comme signature (peut-être), le mot "-fsociety.web" (je ne sais pas de quoi il s'agit).
 
 Maintenant je me rend à `10.0.2.15/about.html`
 
@@ -126,7 +126,7 @@ En faisant un `search drupal 7`, on constate qu'il existe des API property injec
 
 ![1731591971649](image/rapport-tp2/1731591971649.png)
 
-On peut accéder à "exploit/unix/webapp/drupal_drupalgeddon2" qui est une API Porperty injection en tapant `use 1`. On va essayer d'utiliser un reverse shell pour se connecter sur la machine cible de mannière "inversée". Concraitement on va initier une connexion sortante vers l'attaquant (ma machine kali) au lieu que la machine attaquant se connecte à la cible.
+On peut accéder à "exploit/unix/webapp/drupal_drupalgeddon2" qui est une API Porperty injection en tapant `use 1`. On va essayer d'utiliser un reverse shell pour se connecter sur la machine cible de mannière "inversée". Concretement on va initier une connexion de la machine cible vers l'attaquant (ma machine kali) au lieu que la machine attaquant se connecte à la cible.
 
 Pour cela on commence par accèder aux options pour voir les paramètres à renseigner.
 

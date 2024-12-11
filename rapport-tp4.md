@@ -18,7 +18,7 @@ On voit que 2 ports sont ouverts : le 22 et le 80.
 On sait que le port 22 correspont à ssh, donc on va faire une attaque brut force en utilisant hydra
 `sudo hydra -l root -p /usr/share/wordlists/metasploit/unix_passwords.txt -t 6 ssh://10.0.2.7`
 
-![1732286142457](image/rapport-tp4/1732286142457.png)
+![1733943721935](image/rapport-tp4/1733943721935.png)
 
 Sans succès...
 
@@ -117,6 +117,6 @@ Je peux vérifier que je suis bien connecté à la machine cible avec la command
 
 ![1732295085822](image/rapport-tp4/1732295085822.png)
 
-De plus, je peux vérifier que je suis connecté à la machine cible en tant qu'utilisateur 'www-data' grâce à la commande `whoami`.
+De plus, grâce à la commande `whoami`, je peux vérifier que je suis connecté à la machine cible en tant qu'utilisateur 'www-data' qui est l'utilisateur par défaut des serveurs web sur linux.
 
 ![1733943345811](image/rapport-tp4/1733943345811.png)
