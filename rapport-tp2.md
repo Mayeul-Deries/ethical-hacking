@@ -93,7 +93,7 @@ Cela nous donne quelques informations. On remarque différents fichier qui sont 
 
 ## Port 8081
 
-On peut analyser plus en détail le port 5000
+On peut analyser plus en détail le port 8081
 `nmap -sC -sV -A -p 8081 10.0.2.15`
 
 ![1731589313977](image/rapport-tp2/1731589313977.png)
