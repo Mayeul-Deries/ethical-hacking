@@ -22,6 +22,14 @@ On sait que le port 22 correspont à ssh, donc on va faire une attaque brut forc
 
 Sans succès...
 
+Je peux utiliser msfconsole pour rechercher des vulnérabilités existantes.
+
+`search OpenSSH 5.5 p1`
+
+![1734266769958](image/rapport-tp4/1734266769958.png)!
+
+Aucun exploit n'est connu pour cette version.
+
 ## Port 80
 
 Il s'agit d'un serveur web, je me rend donc à l'url 10.0.2.7 et je tombe sur un blog
@@ -38,7 +46,7 @@ Si j'ajoute un caractère (virugle / apostrophe) dans l'url, j'obtiens un messag
 
 Je sais donc qu'il y a du SQL et je vais pouvoir utiliser l'outil SQLMap sur cette url pour tenter de trouver des failles.
 
-Avec l'option "--db", on cherche à énumérer les bases de données. L'option "--batch" permet de ne pas avoir à confirmer les entrées dans le terminal, cela fait les choix par défaut.
+Avec l'option "--dbs", on cherche à énumérer les bases de données. L'option "--batch" permet de ne pas avoir à confirmer les entrées dans le terminal, cela fait les choix par défaut.
 `sqlmap -u http://10.0.2.7/cat.php?id=1 --dbs --batch`
 
 Cette commande nous informe de l'existance de 2 bases de données : "information_schema" et "photoblog".
