@@ -1,6 +1,8 @@
-# Nmap
+## Introduction
 
-## Pratique
+Ce TD nous présente la commande Nmap. Nmap permet de scanner des adresses IP afin de détecter les ports ouverts, les services actifs, ainsi que les systèmes d'exploitation utilisés par une machine cible.
+
+## Mise en pratique
 
 **Does the target ip respond to ICMP echo (ping) requests (Y/N)?**
 

@@ -1,3 +1,5 @@
+*Tout au long de ce tp, l'addresse ip cible varie à plusieurs reprises car ma machine virtuel a eu beaucoup de bug et a redémarré plusieurs fois*
+
 ## Introduction
 
 Ce TD nous présente l'outil SQLMap. SQLMap est un outil open-source utilisé pour détecter et exploiter des vulnérabilités d'injection SQL dans des applications web. Il permet de tester des paramètres vulnérables, d'extraire des bases de données, des tables, ou encore des mots de passe en exploitant les failles des bases de données.
@@ -29,32 +31,36 @@ On peut mainntenant faire une analyse SQLmap sur ce fichier.
 
 `sqlmap -r req.txt --dbs`
 
-<!-- photo -->
+![1734371176860](image/rapport-td3/1734371176860.png)
+
+On découvre plusieurs bases de données, dont la base "blood".
 
 La commande suivante nous permet de connaitre l'utilisateur courant.
 
 `sqlmap -r req.txt --current-user`
 
-<!-- photo -->
+![1734371382972](image/rapport-td3/1734371382972.png)
 
-"root" est bien l'utilisateur courant recherché.
+"root" est l'utilisateur courant recherché.
 
 Pour trouver le flag final, on va d'abord rechercher toutes les tables.
 
 `sqlmap -r req.txt --tables`
 
-<!-- photo -->
+![1734372398351](image/rapport-td3/1734372398351.png)
 
 Parmis la liste de tables, on retrouve une db "blood" qui contient 3 tables : blood_db, flag, users.
 
-La commande suivnate permet d'afficher plus en détail le contenu de chaque table avec ses colonnes. Je l'ai testé sur chacune des table et c'est dans flag que je trouve le flag final (logique).
+La commande suivante permet d'afficher plus en détail le contenu de chaque table avec ses colonnes. Je l'ai testé sur chacune des table et c'est dans flag que je trouve le flag final (logique).
 
 `sqlmap -r req.txt -T flag --columns`
 
-<!-- photo -->
+![1734372495736](image/rapport-td3/1734372495736.png)
+
+Ici, la table flag contient 3 colonnes : flag, id et name.
 
 Je peux utiliser le parametre "dump" pour extraire les entrées de la table et cette commande me ressort le flag.
 
 `sqlmap -r req.txt -T flag --dump`
 
-<!-- photo -->
+![1734372555356](image/rapport-td3/1734372555356.png)
